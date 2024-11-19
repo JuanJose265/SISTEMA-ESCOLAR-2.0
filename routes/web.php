@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\InstitutionController; // Importa el controlador de instituciones
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,3 +20,9 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// Ruta para mostrar el formulario de creación de instituciones
+Route::get('/institutions/create', [InstitutionController::class, 'create'])->name('institutions.create');
+
+// Ruta para procesar y almacenar los datos del formulario de instituciones
+Route::post('/institutions', [InstitutionController::class, 'store'])->name('institutions.store');

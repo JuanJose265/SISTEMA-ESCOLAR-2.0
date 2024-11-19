@@ -11,7 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-
         Schema::create('superusers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -26,6 +25,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('role')->default('user');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
@@ -47,8 +47,14 @@ return new class extends Migration
             $table->integer('last_activity')->index();
         });
 
-       
-
+        Schema::create('superuser_supervisor', function (Blueprint $table) {
+            $table->foreignId('superuser_id')->constrained('superusers'); 
+            $table->string('superuser_name'); 
+            $table->string('institution'); 
+            $table->timestamp('entry'); 
+            $table->timestamp('modified')->nullable(); 
+            $table->timestamp('exit')->nullable(); 
+        });
     }
 
     /**
@@ -56,10 +62,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Corrige el error tipográfico: usa "Schema" con "S" mayúscula
         Schema::dropIfExists('superusers');
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
-    
+        Schema::dropIfExists('superuser_supervisor');
     }
 };
