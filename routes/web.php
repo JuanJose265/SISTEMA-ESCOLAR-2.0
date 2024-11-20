@@ -1,12 +1,11 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InstitutionController; // Importa el controlador de instituciones
 
-
+// Ruta para la página de bienvenida
 Route::get('/', function () {
-    return view('welcome');
+  return view('welcome');
 });
 
 Route::get('/dashboard', function () {
@@ -19,10 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+
+
 require __DIR__.'/auth.php';
-
-// Ruta para mostrar el formulario de creación de instituciones
-Route::get('/institutions/create', [InstitutionController::class, 'create'])->name('institutions.create');
-
-// Ruta para procesar y almacenar los datos del formulario de instituciones
-Route::post('/institutions', [InstitutionController::class, 'store'])->name('institutions.store');

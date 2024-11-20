@@ -4,48 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Models\Institution;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class InstitutionController extends Controller
 {
+    /**
+     * Muestra el formulario para crear una nueva institución.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
-        return view('institutions.create');
+        return view('institutions.create'); // Retorna la vista del formulario
     }
 
+    /**
+     * Guarda una nueva institución en la base de datos.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'password' => 'required|string|min:8|confirmed',
-            'admin_name' => 'required|string|max:255',
-            'admin_email' => 'required|email|max:255',
-            'admin_user_id' => 'required|exists:users,id',
-            'school_number' => 'required|string|max:50',
-            'address_number' => 'required|string|max:50',
+        // Validar los datos del formulario
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',  // Nombre es requerido, tipo string y max 255 caracteres
+            'description' => 'required|string',   // Descripción es requerida
         ]);
 
-        $institution = new Institution();
-        $institution->name = $request->name;
-        $institution->address = $request->address;
+        // Crear y guardar la institución en la base de datos
+        Institution::create($validated);
 
-        if ($request->hasFile('logo')) {
-            $logoPath = $request->file('logo')->store('logos', 'public');
-            $institution->logo = $logoPath;
-        }
-
-        $institution->password = Hash::make($request->password);
-        $institution->admin_name = $request->admin_name;
-        $institution->admin_email = $request->admin_email;
-        $institution->admin_user_id = $request->admin_user_id;
-        $institution->school_number = $request->school_number;
-        $institution->address_number = $request->address_number;
-
-        $institution->save();
-
-        return redirect()->route('institutions.create')->with('success', 'Institución registrada con éxito.');
+        // Redirigir a la página de creación con un mensaje de éxito
+        return redirect()->route('institutions.create')->with('success', 'Institución creada con éxito.');
     }
 }
-
